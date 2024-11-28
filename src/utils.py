@@ -6,7 +6,13 @@ def read_classification_from_file(path: str) -> Dict[str, str]:
 
     with open(path, "r", encoding="utf-8") as file:
         for line in file:
-            name, classification = line.split(" ")
-            classification_table[name] = classification.strip()
+            words = line.split(" ")
+            word_count = len(words)
+            last_word_index = word_count - 1
+
+            email_filename = " ".join(words[0:last_word_index])
+            classification = words[last_word_index]
+
+            classification_table[email_filename] = classification.strip()
 
     return classification_table
