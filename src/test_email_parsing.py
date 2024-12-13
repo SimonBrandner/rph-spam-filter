@@ -13,16 +13,14 @@ class TestEmailParser(unittest.TestCase):
         self.corpus = Corpus(EMAILS_PATH)
 
     def test_parse_all_emails(self):
-        for file_name, content in self.corpus.emails():
-            self._parse_and_print_email(file_name, content)
+        for filename, content in self.corpus.emails():
+            self._parse_and_print_email(filename, content)
 
     @staticmethod
-    def _parse_and_print_email(email_id: str, content: str):
+    def _parse_and_print_email(email_filename: str, content: str):
         print("====================")
-        print(f"Parsing email {email_id}:")
-        print(content)
+        print(f"Parsing email from file {email_filename}.")
         email = Email.from_string(content)
         email.body = email.body[:EMAIL_BODY_PREVIEW_LENGTH] + "..."
-        print("====================")
         print("Parsed email:")
         print(email)
