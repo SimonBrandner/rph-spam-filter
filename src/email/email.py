@@ -1,6 +1,6 @@
-from address import Address
+from src.email.address import Address
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 # Extract constants for better readability and reusability
 REPLY_PREFIXES = ['Re:', 'RE:']
@@ -16,8 +16,8 @@ HEAD_KEYS = {
 @dataclass
 class Email:
     body: str
-    sender: 'Address'
     subject: str
+    sender: Optional['Address'] = None
     is_reply: bool = False
     is_forward: bool = False
 
@@ -29,32 +29,41 @@ class Email:
         sender_entries = cls.extract_head_entries(HEAD_KEYS['FROM'], head)
         subject_entries = cls.extract_head_entries(HEAD_KEYS['SUBJECT'], head)
 
-        if len(sender_entries) != 1 or len(subject_entries) != 1:
+        if len(sender_entries) < 1 or len(subject_entries) < 1:
             raise ValueError(
                 f'Failed to extract mandatory "{HEAD_KEYS["FROM"]}" or "{HEAD_KEYS["SUBJECT"]}" entry from email head:\n\n{head}'
             )
 
-        sender = Address.from_string(sender_entries[0])
+        sender = None
+        try:
+            sender = Address.from_string(sender_entries[0])
+        except ValueError:
+            pass
         subject = subject_entries[0]
         is_reply = cls._determine_is_reply(subject, head)
         is_forward = cls._determine_is_forward(subject)
 
-        return cls(body=body, sender=sender, subject=subject, is_reply=is_reply, is_forward=is_forward)
+        return cls(body=body, subject=subject, sender=sender, is_reply=is_reply, is_forward=is_forward)
 
     @staticmethod
     def extract_head_entries(entry_key: str, head: str) -> List[str]:
-        """Utility function to extract specific entries from the email header."""
         entry_splitter = '\n' + entry_key + ': '
         entries = []
         after_key = head
+
         while True:
             parts = after_key.split(entry_splitter, maxsplit=1)
             if len(parts) == 1:
                 break
+
             after_key = parts[1]
-            possible_content_lines = after_key.splitlines()
-            content = possible_content_lines[0].strip()
-            for line in possible_content_lines[1:]:
+            after_key_lines = after_key.splitlines()
+            if len(after_key_lines) < 1:
+                entries.append('')
+                continue
+
+            content = after_key_lines[0].strip()
+            for line in after_key_lines[1:]:
                 if not len(line) > 5:
                     break
                 line_starts_with_spaces = line.startswith("    ")
@@ -65,6 +74,7 @@ class Email:
                 else:
                     break
             entries.append(content)
+
         return entries
 
     @classmethod
