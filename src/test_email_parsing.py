@@ -1,6 +1,6 @@
 import unittest
 from corpus import Corpus
-from src.email.email import Email
+from email_parses import Email
 
 EMAILS_PATH = './assets/1/'
 EMAIL_BODY_PREVIEW_LENGTH = 100  # Extracted constant for email body truncation length

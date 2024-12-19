@@ -8,7 +8,8 @@ class Corpus:
     path: str
 
     def __init__(self, path: str):
-        self.path = path
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        self.path = os.path.join(dir_path, path)
 
     def emails(self) -> Iterable[Tuple[str, str]]:
         for file_name in os.listdir(self.path):

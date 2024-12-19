@@ -1,4 +1,4 @@
-from src.email.address import Address
+from address import Address
 from dataclasses import dataclass
 from typing import List, Optional
 
