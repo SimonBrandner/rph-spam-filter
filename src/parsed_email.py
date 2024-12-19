@@ -2,6 +2,7 @@ from address import Address
 from dataclasses import dataclass
 from typing import List, Optional
 from urllib.parse import urlparse, ParseResult
+from bs4 import BeautifulSoup
 import re
 
 REPLY_PREFIXES = ['Re:', 'RE:']
@@ -15,6 +16,7 @@ URL_EXTRACTION_REGEX = r"https?:\/\/.*?(?=(?:\s|$))"
 @dataclass
 class ParsedEmail:
     body: str
+    text: str
     subject: str
     urls: List['ParseResult']
     sender: Optional['Address'] = None
@@ -44,12 +46,18 @@ class ParsedEmail:
         is_reply = cls._is_reply(subject, head)
         is_forward = cls._is_forward(subject)
 
+        text = cls._extract_text(body)
         urls = cls._extract_urls(body)
 
-        return cls(body=body, subject=subject, urls=urls, sender=sender, is_reply=is_reply, is_forward=is_forward)
+        return cls(body=body, text=text, subject=subject, urls=urls, sender=sender, is_reply=is_reply, is_forward=is_forward)
 
     @staticmethod
-    def _extract_urls(body: str) -> 'List[ParseResult]':
+    def _extract_text(body: str) -> str:
+        soup = BeautifulSoup(body, 'html.parser')
+        return soup.get_text()
+
+    @staticmethod
+    def _extract_urls(body: str) -> List['ParseResult']:
         parsed_urls = []
         url_matches = re.findall(URL_EXTRACTION_REGEX, body)
 

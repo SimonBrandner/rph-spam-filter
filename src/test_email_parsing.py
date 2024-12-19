@@ -22,5 +22,6 @@ class TestEmailParser(unittest.TestCase):
         print(f"Parsing email from file {email_filename}.")
         email = ParsedEmail.from_string(content)
         email.body = email.body[:EMAIL_BODY_PREVIEW_LENGTH] + "..."
+        email.text = email.text[:EMAIL_BODY_PREVIEW_LENGTH] + "..."
         print("Parsed email:")
         print(email)
