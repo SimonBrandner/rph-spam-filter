@@ -1,26 +1,28 @@
 from address import Address
 from dataclasses import dataclass
 from typing import List, Optional
+from urllib.parse import urlparse, ParseResult
+import re
 
-# Extract constants for better readability and reusability
 REPLY_PREFIXES = ['Re:', 'RE:']
 FORWARD_PREFIXES = ['Fw:', 'FW:']
 HEAD_KEY_FROM = 'From'
 HEAD_KEY_SUBJECT = 'Subject'
 HEAD_KEY_IN_REPLY_TO = 'In-Reply-To'
 HEAD_KEY_REFERENCES = 'References'
-
+URL_EXTRACTION_REGEX = r"https?:\/\/.*?(?=(?:\s|$))"
 
 @dataclass
-class Email:
+class ParsedEmail:
     body: str
     subject: str
+    urls: List['ParseResult']
     sender: Optional['Address'] = None
     is_reply: bool = False
     is_forward: bool = False
 
     @classmethod
-    def from_string(cls, string: str) -> 'Email':
+    def from_string(cls, string: str) -> 'ParsedEmail':
         sections = string.split('\n\n', maxsplit=1)
         head, body = sections[0], "\n\n".join(sections[1:])
 
@@ -42,7 +44,21 @@ class Email:
         is_reply = cls._is_reply(subject, head)
         is_forward = cls._is_forward(subject)
 
-        return cls(body=body, subject=subject, sender=sender, is_reply=is_reply, is_forward=is_forward)
+        urls = cls._extract_urls(body)
+
+        return cls(body=body, subject=subject, urls=urls, sender=sender, is_reply=is_reply, is_forward=is_forward)
+
+    @staticmethod
+    def _extract_urls(body: str) -> 'List[ParseResult]':
+        parsed_urls = []
+        url_matches = re.findall(URL_EXTRACTION_REGEX, body)
+
+        for url in url_matches:
+            parsed_url = urlparse(url)
+            if parsed_url.netloc:
+                parsed_urls.append(parsed_url)
+
+        return parsed_urls
 
     @staticmethod
     def _extract_head_entries(entry_key: str, head: str) -> List[str]:
