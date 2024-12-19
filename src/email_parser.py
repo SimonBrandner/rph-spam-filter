@@ -5,12 +5,10 @@ from typing import List, Optional
 # Extract constants for better readability and reusability
 REPLY_PREFIXES = ['Re:', 'RE:']
 FORWARD_PREFIXES = ['Fw:', 'FW:']
-HEAD_KEYS = {
-    'FROM': 'From',
-    'SUBJECT': 'Subject',
-    'IN_REPLY_TO': 'In-Reply-To',
-    'REFERENCES': 'References'
-}
+HEAD_KEY_FROM = 'From'
+HEAD_KEY_SUBJECT = 'Subject'
+HEAD_KEY_IN_REPLY_TO = 'In-Reply-To'
+HEAD_KEY_REFERENCES = 'References'
 
 
 @dataclass
@@ -26,12 +24,12 @@ class Email:
         sections = string.split('\n\n', maxsplit=1)
         head, body = sections[0], "\n\n".join(sections[1:])
 
-        sender_entries = cls.extract_head_entries(HEAD_KEYS['FROM'], head)
-        subject_entries = cls.extract_head_entries(HEAD_KEYS['SUBJECT'], head)
+        sender_entries = cls._extract_head_entries(HEAD_KEY_FROM, head)
+        subject_entries = cls._extract_head_entries(HEAD_KEY_SUBJECT, head)
 
         if len(sender_entries) < 1:
             raise ValueError(
-                f'Failed to extract mandatory "{HEAD_KEYS["FROM"]}" entry from email head:\n\n{head}'
+                f'Failed to extract mandatory "{HEAD_KEY_FROM}" entry from email head:\n\n{head}'
             )
 
         sender = None
@@ -41,13 +39,13 @@ class Email:
             pass
         subject = subject_entries[0] if len(subject_entries) > 0 else ""
 
-        is_reply = cls._determine_is_reply(subject, head)
-        is_forward = cls._determine_is_forward(subject)
+        is_reply = cls._is_reply(subject, head)
+        is_forward = cls._is_forward(subject)
 
         return cls(body=body, subject=subject, sender=sender, is_reply=is_reply, is_forward=is_forward)
 
     @staticmethod
-    def extract_head_entries(entry_key: str, head: str) -> List[str]:
+    def _extract_head_entries(entry_key: str, head: str) -> List[str]:
         entry_splitter = '\n' + entry_key + ': '
         entries = []
         after_key = head
@@ -79,13 +77,17 @@ class Email:
         return entries
 
     @classmethod
-    def _determine_is_reply(cls, subject: str, head: str) -> bool:
+    def _is_head_entry_present(cls, entry_key: str, head: str) -> bool:
+        return len(cls._extract_head_entries(entry_key, head)) > 0
+
+    @classmethod
+    def _is_reply(cls, subject: str, head: str) -> bool:
         return (
                 any(subject.startswith(prefix) for prefix in REPLY_PREFIXES) or
-                len(cls.extract_head_entries(HEAD_KEYS['IN_REPLY_TO'], head)) > 0 or
-                len(cls.extract_head_entries(HEAD_KEYS['REFERENCES'], head)) > 0
+                cls._is_head_entry_present(HEAD_KEY_IN_REPLY_TO, head) or
+                cls._is_head_entry_present(HEAD_KEY_REFERENCES, head)
         )
 
     @staticmethod
-    def _determine_is_forward(subject: str) -> bool:
+    def _is_forward(subject: str) -> bool:
         return any(subject.startswith(prefix) for prefix in FORWARD_PREFIXES)
