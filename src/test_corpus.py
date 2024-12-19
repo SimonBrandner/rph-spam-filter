@@ -8,7 +8,7 @@ import shutil
 import unittest
 import random
 from datetime import datetime
-from test_readClassificationFromFile import (
+from test_read_classification_from_file import (
     random_filename,
     random_string,
     replaced_open,
