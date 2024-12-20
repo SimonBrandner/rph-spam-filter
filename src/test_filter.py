@@ -4,10 +4,10 @@
 """Tests for MyFilter class."""
 
 import unittest
-import tst_filterbase
+import test_filterbase
 
 
-class MyFilterTest(tst_filterbase.BaseFilterTestCase):
+class MyFilterTest(test_filterbase.BaseFilterTestCase):
 
     def setUp(self):
         super().setUp()
