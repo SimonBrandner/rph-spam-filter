@@ -10,12 +10,12 @@ to provide additional functionality.
 
 import unittest
 
-from trainingcorpus import TrainingCorpus
+from training_corpus import TrainingCorpus
 
 import os
 import random
 from collections import Counter
-from test_readClassificationFromFile import save_classification_to_file, replaced_open
+from test_read_classification_from_file import save_classification_to_file, replaced_open
 from test_corpus import (
     create_corpus_dictionary,
     create_corpus_dir_from_dictionary,

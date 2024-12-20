@@ -1,6 +1,6 @@
 from quality import compute_quality_for_corpus
 
-from simplefilters import RandomFilter as Filter
+from simple_filters import RandomFilter as Filter
 
 TRAINING_DIRECTORY = "./assets/1/"
 TESTING_DIRECTORY = "./assets/2/"

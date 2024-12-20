@@ -6,7 +6,7 @@
 import unittest
 import test_filterbase
 
-from simplefilters import NaiveFilter, ParanoidFilter, RandomFilter
+from simple_filters import NaiveFilter, ParanoidFilter, RandomFilter
 
 
 class NaiveFilterTest(test_filterbase.BaseFilterTestCase):

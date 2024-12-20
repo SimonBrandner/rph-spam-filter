@@ -6,7 +6,7 @@
 import unittest
 import os
 import shutil
-from test_readClassificationFromFile import (
+from test_read_classification_from_file import (
     create_classification,
     save_classification_to_file,
     replaced_open,

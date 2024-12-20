@@ -1,6 +1,6 @@
 import unittest
 from corpus import Corpus
-from src.email.email import Email
+from parsed_email import ParsedEmail
 
 EMAILS_PATH = './assets/1/'
 EMAIL_BODY_PREVIEW_LENGTH = 100  # Extracted constant for email body truncation length
@@ -20,7 +20,8 @@ class TestEmailParser(unittest.TestCase):
     def _parse_and_print_email(email_filename: str, content: str):
         print("====================")
         print(f"Parsing email from file {email_filename}.")
-        email = Email.from_string(content)
+        email = ParsedEmail.from_string(content)
         email.body = email.body[:EMAIL_BODY_PREVIEW_LENGTH] + "..."
+        email.text = email.text[:EMAIL_BODY_PREVIEW_LENGTH] + "..."
         print("Parsed email:")
         print(email)
