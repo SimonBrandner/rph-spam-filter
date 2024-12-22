@@ -24,6 +24,3 @@ def calc_levenshtein_distance(str1: str, str2: str) -> int:
             levenshtein_matrix[i, j] = min(insertion, deletion, substitution)
 
     return levenshtein_matrix[n, m]
-
-if __name__ == "__main__":
-	print(calc_levenshtein_distance("hello", "helo"))

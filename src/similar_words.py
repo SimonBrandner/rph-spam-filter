@@ -2,6 +2,11 @@ from levenshtein_distance import calc_levenshtein_distance
 
 
 def are_words_similar(word1: str, word2: str, min_similarity: float = 0.8) -> bool:
+    """
+    Determines if two words are similar based on a minimum similarity threshold using
+    Levenshtein distance as a measure of similarity.
+    """
+
     def calc_words_similarity(distance: int, max_distance: int) -> float:
         return 1 - (distance / max_distance)
 
