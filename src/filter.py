@@ -43,13 +43,20 @@ class MyFilter(BaseFilter):
     spam_word_dict: Dict[str, int]
     ham_word_dict: Dict[str, int]
 
-    def train(self, path: str):
+    def __init__(self):
+        super().__init__()
+        self.initialize_training()
+
+    def initialize_training(self):
         self.spam_word_count = 0
         self.ham_word_count = 0
         self.number_of_spams = 0
         self.number_of_hams = 0
         self.spam_word_dict = {}
         self.ham_word_dict = {}
+
+    def train(self, path: str):
+        self.initialize_training()
 
         corpus = TrainingCorpus(path)
         for name, content in corpus.emails():
@@ -77,8 +84,14 @@ class MyFilter(BaseFilter):
         corpus = Corpus(path)
         prediction = {}
 
-        for name, content in corpus.emails():
-            prediction[name] = self.get_email_class(content)
+        if self.number_of_spams + self.number_of_hams != 0:
+            for name, content in corpus.emails():
+                prediction[name] = self.get_email_class(content)
+        else:
+            # This has to be done, so that the tests do not fail. For some
+            # reason, they do call the train() method
+            for name, _ in corpus.emails():
+                prediction[name] = OK_TAG
 
         self.write_prediction_to_file(path, prediction)
 
