@@ -9,9 +9,12 @@ ASSETS_DIRECTORY = "./assets/"
 TRAINING_DIRECTORY = "/tmp/spam-filter/training"
 TESTING_DIRECTORY = "/tmp/spam-filter/testing"
 
+TESTING_PROBABILITY = 0.2
+"""The percentage of data to use for testing"""
+
 
 def is_for_testing():
-    return random.uniform(0, 1) < 0.2
+    return random.uniform(0, 1) < TESTING_PROBABILITY
 
 
 def split_dataset(path: str):
