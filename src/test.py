@@ -2,7 +2,7 @@ import os
 import shutil
 import random
 
-from simple_filters import RandomFilter as Filter
+from filter import MyFilter as Filter
 from quality import TRUTH_FILENAME, compute_quality_for_corpus
 from utils import read_classification_from_file, write_classification_to_file
 
