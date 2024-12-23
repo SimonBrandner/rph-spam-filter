@@ -35,7 +35,7 @@ class BaseFilterTestCase(unittest.TestCase):
         self.create_corpus_without_truth()
         # The following variable shall contain the filter instance to be
         # tested. It must be set in the derived classes.
-        self.filter = MyFilter()
+        self.filter = None
 
     def delete_testing_corpus(self):
         """Remove the corpus created for testing purposes."""
