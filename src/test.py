@@ -1,4 +1,5 @@
 import os
+import shutil
 import random
 
 from simple_filters import RandomFilter as Filter
@@ -26,24 +27,33 @@ def split_dataset(path: str):
     for email_name, email_classification in read_classification_from_file(
         os.path.join(path, TRUTH_FILENAME)
     ).items():
+        source_path = os.path.join(path, email_name)
         if is_for_testing():
-            os.system(f"cp {path}/{email_name} {TESTING_DIRECTORY}/{email_name}")
+            destination_path = os.path.join(TESTING_DIRECTORY, email_name)
+            shutil.copy(source_path, destination_path)
             testing_emails[email_name] = email_classification
         else:
-            os.system(f"cp {path}/{email_name} {TRAINING_DIRECTORY}/{email_name}")
+            destination_path = os.path.join(TRAINING_DIRECTORY, email_name)
+            shutil.copy(source_path, destination_path)
             training_emails[email_name] = email_classification
 
-        write_classification_to_file(
-            os.path.join(TESTING_DIRECTORY, TRUTH_FILENAME), testing_emails
-        )
-        write_classification_to_file(
-            os.path.join(TRAINING_DIRECTORY, TRUTH_FILENAME), training_emails
-        )
+    write_classification_to_file(
+        os.path.join(TESTING_DIRECTORY, TRUTH_FILENAME), testing_emails
+    )
+    write_classification_to_file(
+        os.path.join(TRAINING_DIRECTORY, TRUTH_FILENAME), training_emails
+    )
 
 
 def cleanup():
-    os.system(f"rm -rf {TRAINING_DIRECTORY}")
-    os.system(f"rm -rf {TESTING_DIRECTORY}")
+    if os.path.exists(TRAINING_DIRECTORY):
+        shutil.rmtree(
+            TRAINING_DIRECTORY
+        )  # Remove the training directory and its contents
+    if os.path.exists(TESTING_DIRECTORY):
+        shutil.rmtree(
+            TESTING_DIRECTORY
+        )  # Remove the testing directory and its contents
 
 
 if __name__ == "__main__":
