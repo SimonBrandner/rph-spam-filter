@@ -4,7 +4,7 @@ import math
 from basefilter import BaseFilter
 from corpus import Corpus
 from parsed_email import ParsedEmail
-from test_filterbase import HAM_TAG, SPAM_TAG
+from quality import OK_TAG, SPAM_TAG
 from training_corpus import TrainingCorpus
 
 
@@ -98,4 +98,4 @@ class MyFilter(BaseFilter):
                 word, self.spam_word_dict, self.spam_word_count
             )
 
-        return HAM_TAG if ham_score > spam_score else SPAM_TAG
+        return OK_TAG if ham_score > spam_score else SPAM_TAG

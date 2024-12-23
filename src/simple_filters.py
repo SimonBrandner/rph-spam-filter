@@ -1,7 +1,7 @@
 import random
 from basefilter import BaseFilter
 from corpus import Corpus
-from test_filterbase import HAM_TAG, SPAM_TAG
+from quality import OK_TAG, SPAM_TAG
 
 
 class NaiveFilter(BaseFilter):
@@ -10,7 +10,7 @@ class NaiveFilter(BaseFilter):
 
         prediction = {}
         for name, _ in corpus.emails():
-            prediction[name] = HAM_TAG
+            prediction[name] = OK_TAG
         self.write_prediction_to_file(path, prediction)
 
 
@@ -30,5 +30,5 @@ class RandomFilter(BaseFilter):
 
         prediction = {}
         for name, _ in corpus.emails():
-            prediction[name] = random.choice([HAM_TAG, SPAM_TAG])
+            prediction[name] = random.choice([OK_TAG, SPAM_TAG])
         self.write_prediction_to_file(path, prediction)

@@ -1,8 +1,7 @@
 from typing import Dict
 import os
 from corpus import Corpus
-from quality import TRUTH_FILENAME
-from test_filterbase import HAM_TAG, SPAM_TAG
+from quality import OK_TAG, SPAM_TAG, TRUTH_FILENAME
 from utils import read_classification_from_file
 
 
@@ -20,7 +19,7 @@ class TrainingCorpus(Corpus):
         return self.classification[email_name]
 
     def is_ham(self, email_name: str):
-        return self.classification[email_name] == HAM_TAG
+        return self.classification[email_name] == OK_TAG
 
     def is_spam(self, email_name: str):
         return self.classification[email_name] == SPAM_TAG

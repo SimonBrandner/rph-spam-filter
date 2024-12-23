@@ -5,8 +5,12 @@ import os
 import unittest
 import shutil
 import random
+from filter import MyFilter
 from utils import read_classification_from_file
-from test_read_classification_from_file import save_classification_to_file, replaced_open
+from test_read_classification_from_file import (
+    save_classification_to_file,
+    replaced_open,
+)
 from test_corpus import create_corpus_dictionary, create_corpus_dir_from_dictionary
 
 CORPUS_DIR = "corpus_for_testing_delete_me"
@@ -31,7 +35,7 @@ class BaseFilterTestCase(unittest.TestCase):
         self.create_corpus_without_truth()
         # The following variable shall contain the filter instance to be
         # tested. It must be set in the derived classes.
-        self.filter = None
+        self.filter = MyFilter()
 
     def delete_testing_corpus(self):
         """Remove the corpus created for testing purposes."""
