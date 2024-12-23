@@ -62,9 +62,12 @@ class ParsedEmail:
         url_matches = re.findall(URL_EXTRACTION_REGEX, body)
 
         for url in url_matches:
-            parsed_url = urlparse(url)
-            if parsed_url.netloc:
-                parsed_urls.append(parsed_url)
+            try:
+                parsed_url = urlparse(url)
+                if parsed_url.netloc:
+                    parsed_urls.append(parsed_url)
+            except:
+                pass
 
         return parsed_urls
 
