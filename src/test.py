@@ -59,28 +59,28 @@ def cleanup():
 
 
 if __name__ == "__main__":
-    # To be safe in the case this crashed when previously run and it did not
-    # clean up after itself
-    cleanup()
-
-    for dataset in os.listdir(ASSETS_DIRECTORY):
-        if os.path.isfile(os.path.join(ASSETS_DIRECTORY, dataset)):
+    for dataset_dir in os.listdir(ASSETS_DIRECTORY):
+        dataset_dir_path = os.path.join(ASSETS_DIRECTORY, dataset_dir)
+        if os.path.isfile(dataset_dir_path):
             continue
-
-        split_dataset(os.path.join(ASSETS_DIRECTORY, dataset))
 
         # Since we split the data randomly we test several times to get a good
         # idea of how the filter performs
         total_quality = 0
-        for i in range(NUMBER_OF_RUNS_FOR_DATASET):
+
+        for _ in range(NUMBER_OF_RUNS_FOR_DATASET):
+            cleanup()
+            split_dataset(dataset_dir_path)
+
             filter = Filter()
             filter.train(TRAINING_DIRECTORY)
             filter.test(TESTING_DIRECTORY)
+
             total_quality += compute_quality_for_corpus(TESTING_DIRECTORY)
 
         average_quality = total_quality / NUMBER_OF_RUNS_FOR_DATASET
         print(
-            f"Filter has average quality {average_quality} for {os.path.join(ASSETS_DIRECTORY, dataset)}"
+            f"Filter has average quality {average_quality} for {dataset_dir_path}."
         )
 
         cleanup()
