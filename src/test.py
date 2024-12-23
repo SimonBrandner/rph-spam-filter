@@ -44,6 +44,10 @@ def cleanup():
 
 
 if __name__ == "__main__":
+    # To be safe in the case this crashed when previously run and it did not
+    # clean up after itself
+    cleanup()
+
     for dataset in os.listdir(ASSETS_DIRECTORY):
         if os.path.isfile(os.path.join(ASSETS_DIRECTORY, dataset)):
             continue
